@@ -8,7 +8,10 @@ import java.util.Scanner;
 
 public class FileService {
 	List<List<Float>> matrix = new ArrayList<List<Float>>();
-	public void readFileIntoArray(File file){
+	int columns;
+	int rows;
+	//Read file to matrix
+	public boolean readFileIntoArray(File file){
 		Scanner inFile;
 		try {
 			inFile = new Scanner(file);
@@ -16,23 +19,42 @@ public class FileService {
 				String currentLine = inFile.nextLine().replace(',', '.');
 				List<String> list = new ArrayList<String>(Arrays.asList(currentLine.split(" ")));
 			    Float[] row = new Float[list.size()];
-
+			    
 			    for (int i = 0; i < list.size(); i++)
 			    {
 			        row[i] = Float.parseFloat(list.get(i));
 			    }
 			    matrix.addAll(Arrays.asList(Arrays.asList(row)));
 			}
-			for(int i = 0; i < matrix.size(); i++){
-		    	System.out.println(matrix.get(i));
-		    }
 			inFile.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch(Exception e){
 			Error error = new Error();
 			error.open("Error in file " + file.getAbsolutePath() + " line " + (matrix.size() + 1));
-			System.out.println("Error in line " + (matrix.size() + 1));
+		}
+		rows = matrix.size();
+		return chceckRows();
+	}
+	//Checks if all rows have the same size
+	private boolean chceckRows(){
+		int tempColumns = matrix.get(0).size();
+		Boolean flag = true;
+		List<Float> currentRow = matrix.get(0);
+		for(List<Float> i : matrix){
+			currentRow = i;
+			if(i.size() != tempColumns){
+				flag = false;
+				break;
+			}
+		}
+		if(flag){
+			columns = tempColumns;
+			return true;
+		}else{
+			Error error = new Error();
+			error.open("Diffrent size of rows, line " + (matrix.indexOf(currentRow) + 1));
+			return false;
 		}
 	}
 }
