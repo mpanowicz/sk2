@@ -26,15 +26,6 @@ public class MainWindow {
         }
 	}
 	
-	public static void main(String[] args) {
-		try {
-			MainWindow window = new MainWindow();
-			window.open();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
 	//Open the window
 	public void open() {
 		Display display = Display.getDefault();
