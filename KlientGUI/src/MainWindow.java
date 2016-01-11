@@ -11,19 +11,21 @@ import org.eclipse.swt.widgets.FileDialog;
 import java.net.*;
 import java.io.*;
 
-
-
 public class MainWindow {
 
 	protected Shell shell;
 	private Text pathA;
 	private Text pathB;
 	private Text text;
-
-	/**
-	 * Launch the application.
-	 * @param args
-	 */
+	private void findFile(Text path){
+		FileDialog fileDialog = new FileDialog(shell, SWT.MULTI);
+        fileDialog.setFilterExtensions(new String[]{"*.txt"});
+        String file = fileDialog.open();
+        if(file != null) {
+          path.setText(file);
+        }
+	}
+	
 	public static void main(String[] args) {
 		try {
 			MainWindow window = new MainWindow();
@@ -33,9 +35,7 @@ public class MainWindow {
 		}
 	}
 
-	/**
-	 * Open the window.
-	 */
+	//Open the window
 	public void open() {
 		Display display = Display.getDefault();
 		createContents();
@@ -48,53 +48,38 @@ public class MainWindow {
 		}
 	}
 
-	/**
-	 * Create contents of the window.
-	 */
+	 //Create contents of the window
 	protected void createContents() {
 		shell = new Shell();
 		shell.setSize(450, 300);
-		shell.setText("SWT Application");
+		shell.setText("Mno¿enie macierzy");
 		shell.setLayout(null);
 		
 		pathA = new Text(shell, SWT.BORDER);
 		pathA.setBounds(28, 7, 298, 21);
-		pathA.setText("Macierz A");
 		
 		Button chooseA = new Button(shell, SWT.NONE);
 		chooseA.addMouseListener(new MouseAdapter() {
 			public void mouseDown(MouseEvent e) {
-				FileDialog fileDialog = new FileDialog(shell, SWT.MULTI);
-		        fileDialog.setFilterExtensions(new String[]{"*.txt"});
-		        
-		        String file = fileDialog.open();
-		        if(file != null) {
-		          pathA.setText(file);
-		        }
+				findFile(pathA);
 			}
 		});
 		chooseA.setBounds(354, 5, 75, 25);
 		chooseA.setText("Wybierz");
 		
 		pathB = new Text(shell, SWT.BORDER);
-		pathB.setText("Macierz B");
 		pathB.setBounds(28, 36, 298, 21);
 		
 		Button chooseB = new Button(shell, SWT.NONE);
 		chooseB.addMouseListener(new MouseAdapter() {
 			public void mouseDown(MouseEvent e) {
-				FileDialog fileDialog = new FileDialog(shell, SWT.MULTI);
-		        fileDialog.setFilterExtensions(new String[]{"*.txt"});
-		        
-		        String file = fileDialog.open();
-		        if(file != null) {
-		          pathB.setText(file);
-		        }
+				findFile(pathB);
 			}
 		});
 		chooseB.setText("Wybierz");
 		chooseB.setBounds(354, 34, 75, 25);
 		
+		//Do some magic
 		Button solve = new Button(shell, SWT.NONE);
 		solve.addMouseListener(new MouseAdapter() {
 			public void mouseDown(MouseEvent e) {
