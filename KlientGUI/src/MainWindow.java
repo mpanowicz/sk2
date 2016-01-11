@@ -11,6 +11,8 @@ import org.eclipse.swt.widgets.FileDialog;
 import java.net.*;
 import java.io.*;
 
+
+
 public class MainWindow {
 
 	protected Shell shell;
@@ -101,7 +103,9 @@ public class MainWindow {
 				if(fileA.exists() && !fileA.isDirectory() && fileB.exists() && !fileB.isDirectory()){
 					solve solver = new solve();
 					solver.multiply(pathA.getText(), pathB.getText());
-					solver.connect();
+					//solver.connect();
+					FileService fileService = new FileService();
+					fileService.readFileIntoArray(fileA);
 				}
 				else{
 					Error error = new Error();
