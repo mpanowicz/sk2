@@ -10,6 +10,7 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.widgets.FileDialog;
 import java.net.*;
 import java.io.*;
+import org.eclipse.swt.widgets.Label;
 
 public class MainWindow {
 
@@ -17,6 +18,8 @@ public class MainWindow {
 	private Text pathA;
 	private Text pathB;
 	private Text text;
+	private Text adressText;
+	private Text portText;
 	private void findFile(Text path){
 		FileDialog fileDialog = new FileDialog(shell, SWT.MULTI);
         fileDialog.setFilterExtensions(new String[]{"*.txt"});
@@ -27,6 +30,9 @@ public class MainWindow {
 	}
 	
 	//Open the window
+	/**
+	 * @wbp.parser.entryPoint
+	 */
 	public void open() {
 		Display display = Display.getDefault();
 		createContents();
@@ -95,6 +101,24 @@ public class MainWindow {
 		
 		text = new Text(shell, SWT.BORDER);
 		text.setBounds(28, 84, 298, 21);
+		
+		Label pathLabel = new Label(shell, SWT.NONE);
+		pathLabel.setBounds(28, 63, 180, 15);
+		pathLabel.setText("Adres wygenerowanego pliku");
+		
+		Label adressLabel = new Label(shell, SWT.NONE);
+		adressLabel.setBounds(28, 130, 30, 15);
+		adressLabel.setText("Adres");
+		
+		Label portLabel = new Label(shell, SWT.NONE);
+		portLabel.setText("Port");
+		portLabel.setBounds(28, 157, 30, 15);
+		
+		adressText = new Text(shell, SWT.BORDER);
+		adressText.setBounds(64, 127, 262, 21);
+		
+		portText = new Text(shell, SWT.BORDER);
+		portText.setBounds(64, 154, 262, 21);
 
 	}
 }
