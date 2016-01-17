@@ -22,6 +22,7 @@ int main(int argc, char** argv)
     int fd, n , b,l,fd2,size, on=1,i=0, con,petla=1;
     struct sockaddr_in sa;
     struct sockaddr_in caddr[100];
+    int tab[100]={0};
     signal(SIGCHLD, childend);
     fd = socket(PF_INET, SOCK_STREAM, 0);
     setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (char*)&on, sizeof(on));
@@ -36,6 +37,7 @@ int main(int argc, char** argv)
 	fd2=accept(fd, (struct sockaddr*)&caddr[i], &size);
 	if(!fork())
 	{
+	    tab[i]=1;
 	    int port,fd3, numer=i;
 	    i++;
 	    close(fd);
