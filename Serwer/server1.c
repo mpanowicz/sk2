@@ -21,7 +21,8 @@ int main(int argc, char** argv)
 {
     int fd, n , b,l,fd2,size, on=1,i=0, con,petla=1;
     struct sockaddr_in sa;
-    struct sockaddr_in caddr[atoi(argv[1])];
+    struct sockaddr_in caddr[100];
+    int tab[100]={0};
     signal(SIGCHLD, childend);
     fd = socket(PF_INET, SOCK_STREAM, 0);
     setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (char*)&on, sizeof(on));
@@ -36,18 +37,21 @@ int main(int argc, char** argv)
 	fd2=accept(fd, (struct sockaddr*)&caddr[i], &size);
 	if(!fork())
 	{
-	    int port,fd3;
+	    tab[i]=1;
+	    int port,fd3, numer=i;
+	    i++;
 	    close(fd);
-	    printf("Nowe połączenie: %s:%i\n", inet_ntoa((struct in_addr)caddr[i].sin_addr), caddr[i].sin_port);
+	    printf("Nowe połączenie: %s:%i\n", inet_ntoa((struct in_addr)caddr[numer].sin_addr), caddr[numer].sin_port);
 	    read(fd2, &port, 4);
-	    caddr[i].sin_port=port;
+	    caddr[numer].sin_port=port;
 	    //caddr[i].sin_port = htons(13240);
-	    caddr[i].sin_family=PF_INET;
-	    printf("Nowy port: %s:%i\n", inet_ntoa((struct in_addr)caddr[i].sin_addr), caddr[i].sin_port);
+	    caddr[numer].sin_family=PF_INET;
+	    printf("Nowy port: %s:%i\n", inet_ntoa((struct in_addr)caddr[numer].sin_addr), caddr[numer].sin_port);
 	    close(fd2);
-	  while(petla==1)
-	  {
-	    con=connect(fd3, (struct sockaddr*)&caddr[i], sizeof(caddr[i]));
+	    fd3 = socket(PF_INET, SOCK_STREAM, 0);
+	    while(petla==1)
+	    {
+	    con=connect(fd3, (struct sockaddr*)&caddr[numer], sizeof(caddr[numer]));
 	    if(con==-1)
 	    {
 	      printf("Serwer nie odpowiada\n");

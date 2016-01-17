@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <signal.h>
 
+#define MAX_SIZE 256
 #define readI(fd, x) read(fd, x, sizeof(int))
 #define readF(fd, x) read(fd, x, sizeof(float))
 #define writeI(fd, x) write(fd, x, sizeof(int))
@@ -15,6 +16,31 @@ void childend()
 {
   wait(NULL);
   printf("Koniec połączenia\n");
+}
+
+float* readRow(int fd, int len)
+{
+    static float *row = NULL;
+    row = (float *)calloc( len , sizeof(calloc) );
+    read(fd, row, sizeof(float) * len);
+    if (row == NULL)
+    {
+	printf("Error");
+    }
+    return row;
+}
+
+
+float multiply(float* row, float* column, int len)
+{
+    float result;
+    result = 0;
+    int i;
+    for(i = 0; i < len; i++)
+    {
+	result += (*(row + i) * *(column + i));
+    }
+    return result;
 }
 
 int main(int argc, char** argv) 
@@ -50,6 +76,26 @@ int main(int argc, char** argv)
     {
       close(fd);
       printf("Nowe połączenie: %s:%i\n", inet_ntoa((struct in_addr)caddr[0].sin_addr), caddr[0].sin_port);
+      int len, rowsCount;
+	    readI(fd2, &len);
+	    readI(fd2, &rowsCount);
+	    printf("Rows:%d Columns:%d\n", rowsCount, len);
+	    int i;
+	    for(i = 0; i < rowsCount * len; i++)
+	    {
+		float *first, *second;
+		int x, y;
+		readI(fd2, &x);
+		readI(fd2, &y);
+		printf("Row:%d Column:%d ", x, y);
+		first = readRow(fd2, len);
+		second = readRow(fd2, len);
+		float result = multiply(first, second, len);
+		printf("Value:%f\n", result);
+		writeI(fd2, &x);
+		writeI(fd2, &y);
+		writeF(fd2, &result);
+	    }
       close(fd2);
       return 0;
     }
