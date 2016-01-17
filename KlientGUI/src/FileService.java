@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -7,7 +8,7 @@ import java.util.Scanner;
 
 
 public class FileService {
-	List<List<Float>> matrix = new ArrayList<List<Float>>();
+	List<List<BigDecimal>> matrix = new ArrayList<List<BigDecimal>>();
 	int columns;
 	int rows;
 	//Read file to matrix
@@ -18,11 +19,11 @@ public class FileService {
 			while (inFile.hasNextLine()) {
 				String currentLine = inFile.nextLine().replace(',', '.');
 				List<String> list = new ArrayList<String>(Arrays.asList(currentLine.split(" ")));
-			    Float[] row = new Float[list.size()];
+				BigDecimal[] row = new BigDecimal[list.size()];
 			    
 			    for (int i = 0; i < list.size(); i++)
 			    {
-			        row[i] = Float.parseFloat(list.get(i));
+			        row[i] = new BigDecimal(list.get(i));
 			    }
 			    matrix.addAll(Arrays.asList(Arrays.asList(row)));
 			}
@@ -40,8 +41,8 @@ public class FileService {
 	private boolean chceckRows(){
 		int tempColumns = matrix.get(0).size();
 		Boolean flag = true;
-		List<Float> currentRow = matrix.get(0);
-		for(List<Float> i : matrix){
+		List<BigDecimal> currentRow = matrix.get(0);
+		for(List<BigDecimal> i : matrix){
 			currentRow = i;
 			if(i.size() != tempColumns){
 				flag = false;
