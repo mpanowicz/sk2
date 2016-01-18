@@ -44,6 +44,23 @@ void getFile(char path[100], int jfdc){
 			break;
 		}
 	}
+	printf("Done\n");
+	close(fd);
+}
+
+void sendFile(char path[100], int jfdc){
+	printf("Sending: %s\n", path);
+	char buf[1000];
+	int fd = open(path, O_RDWR, 0666);
+	int n = 0;
+	n = read(fd, &buf, 1);
+	while(n > 0){
+		write(jfdc, &buf, n);
+		memset(&buf[0], 0, sizeof(buf));
+		n = read(fd, &buf, 1);
+	}
+	write(jfdc, "\n", 1);
+	printf("Done\n");
 	close(fd);
 }
 
@@ -72,7 +89,7 @@ float* vecToFloat(vector<float> v){
 	static float *row  = NULL;
     row = (float *)calloc( v.size() , sizeof(sizeof(v)) );
     memcpy(row, &v[0], v.size() * sizeof(v[0]));
-	for(int i = 0; i < v.size(); i++){
+	for(unsigned int i = 0; i < v.size(); i++){
 		cout<<row[i]<<" ";
 	}
 	printf("\n");
@@ -113,13 +130,14 @@ int main(int argc, char** argv) {
         if(!fork()){
             close(jfd);
             printf("Nowe połączenie: %s:%i\n", inet_ntoa((struct in_addr)caddr.sin_addr), caddr.sin_port);
-			char path[100], pathA[100], pathB[100];
+			char path[100], pathA[100], pathB[100], pathC[100];
 			sprintf(path, "./files/%d", caddr.sin_port);
 			mkdir(path, 0777);
 			sprintf(pathA, "./files/%d/macierzA.txt", caddr.sin_port);
 			getFile(pathA, jfdc);
 			sprintf(pathB, "./files/%d/macierzB.txt", caddr.sin_port);
 			getFile(pathB, jfdc);
+			sprintf(pathC, "./files/%d/macierzC.txt", caddr.sin_port);
 			vector< vector<float> > a = readFile(pathA);
 			vector< vector<float> > b = readFile(pathB);
 			int fd2;
@@ -130,10 +148,9 @@ int main(int argc, char** argv) {
 					printf("Nowe połączenie: %s:%i\n", inet_ntoa((struct in_addr)laddr.sin_addr), laddr.sin_port);
 					int len = a[0].size();
 					int rowsCount = a.size();
-					int portCast = (int) laddr.sin_port;
 					writeI(fd2, &len);
 					writeI(fd2, &rowsCount);
-					//writeI(fd2, &portCast);
+					ofstream outC(pathC);
 					int i, j;
 					for(i = 0; i < rowsCount; i++){
 						for(j = 0; j < len; j++){
@@ -145,23 +162,26 @@ int main(int argc, char** argv) {
 							write(fd2, mA, sizeof(float) * len);
 							write(fd2, mB, sizeof(float) * len);
 							float result;
-							int x, y, port;
+							int x, y;
 							readI(fd2, &x);
 							readI(fd2, &y);
 							readF(fd2, &result);
-							//readI(fd2, &port);
-							printf("Port:%d Row:%d Column:%d Value:%f PortC:%d\n", laddr.sin_port, x, y, result, port);
+							printf("Port:%d Row:%d Column:%d Value:%f\n", laddr.sin_port, x, y, result);
+							outC << result << " ";
 						}
+						outC << endl;
 					}
+					outC.close();
 					write(fd2, "\n", 1);
 					close(fd2);
-					break;break;
+					sendFile(pathC, jfdc);
+					close(jfdc);
+					return 0;
 				}
+				return 0;
 			}
-			close(jfdc);
 			return 0;
         }
-		
 	}
 	close(jfd);
     return 0;
