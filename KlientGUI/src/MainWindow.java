@@ -1,4 +1,7 @@
 import java.io.File;
+import java.nio.file.Paths;
+
+import javax.naming.CommunicationException;
 
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -8,8 +11,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.widgets.FileDialog;
-import java.net.*;
-import java.io.*;
 import org.eclipse.swt.widgets.Label;
 
 public class MainWindow {
@@ -17,7 +18,7 @@ public class MainWindow {
 	protected Shell shell;
 	private Text pathA;
 	private Text pathB;
-	private Text text;
+	private Text pathC;
 	private Text adressText;
 	private Text portText;
 	private void findFile(Text path){
@@ -48,12 +49,13 @@ public class MainWindow {
 	 //Create contents of the window
 	protected void createContents() {
 		shell = new Shell();
-		shell.setSize(450, 300);
+		shell.setSize(450, 224);
 		shell.setText("Mno¿enie macierzy");
 		shell.setLayout(null);
 		
 		pathA = new Text(shell, SWT.BORDER);
 		pathA.setBounds(28, 7, 298, 21);
+		pathA.setText("C:\\GIT\\sk2\\macierzA.txt");
 		
 		Button chooseA = new Button(shell, SWT.NONE);
 		chooseA.addMouseListener(new MouseAdapter() {
@@ -66,6 +68,7 @@ public class MainWindow {
 		
 		pathB = new Text(shell, SWT.BORDER);
 		pathB.setBounds(28, 36, 298, 21);
+		pathB.setText("C:\\GIT\\sk2\\macierzB.txt");
 		
 		Button chooseB = new Button(shell, SWT.NONE);
 		chooseB.addMouseListener(new MouseAdapter() {
@@ -80,27 +83,22 @@ public class MainWindow {
 		Button solve = new Button(shell, SWT.NONE);
 		solve.addMouseListener(new MouseAdapter() {
 			public void mouseDown(MouseEvent e) {
-				File fileA = new File(pathA.getText());
-				File fileB = new File(pathB.getText());
-				if(fileA.exists() && !fileA.isDirectory() && fileB.exists() && !fileB.isDirectory()){
-					solve solver = new solve();
-					solver.multiply(pathA.getText(), pathB.getText());
-					//solver.connect();
-					FileService fileService = new FileService();
-					fileService.readFileIntoArray(fileA);
+				Comunication com = new Comunication();
+				String matrixC = "";
+				if(pathC.getText() == ""){
+					matrixC = Paths.get("").toAbsolutePath().toString() + "\\matrixC.txt";
+				}else{
+					matrixC = pathC.getText().toString();
 				}
-				else{
-					Error error = new Error();
-					error.open("File no exists");
-				}
-				
+				com.connect(adressText.getText().toString(), Integer.parseInt(portText.getText().toString()), pathA.getText().toString(), pathB.getText().toString(), matrixC);	
+				pathC.setText(matrixC);
 			}
 		});
 		solve.setBounds(354, 82, 75, 25);
 		solve.setText("Oblicz");
 		
-		text = new Text(shell, SWT.BORDER);
-		text.setBounds(28, 84, 298, 21);
+		pathC = new Text(shell, SWT.BORDER);
+		pathC.setBounds(28, 84, 298, 21);
 		
 		Label pathLabel = new Label(shell, SWT.NONE);
 		pathLabel.setBounds(28, 63, 180, 15);
@@ -115,9 +113,11 @@ public class MainWindow {
 		portLabel.setBounds(28, 157, 30, 15);
 		
 		adressText = new Text(shell, SWT.BORDER);
+		adressText.setText("panowiczmichal.ddns.net");
 		adressText.setBounds(64, 127, 262, 21);
 		
 		portText = new Text(shell, SWT.BORDER);
+		portText.setText("4321");
 		portText.setBounds(64, 154, 262, 21);
 
 	}
