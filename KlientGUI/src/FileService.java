@@ -3,7 +3,6 @@ import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -30,7 +29,8 @@ public class FileService {
 			}
 			inFile.close();
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			Error error = new Error();
+            error.open(e.getMessage());
 		} catch(Exception e){
 			Error error = new Error();
 			error.open("Error in file " + file.getAbsolutePath() + " line " + (matrix.size() + 1));
@@ -63,7 +63,7 @@ public class FileService {
 	public void transpose(){
 		List<List<BigDecimal>> transposedMatrix = new ArrayList<List<BigDecimal>>();
 		for(int i = 0; i < columns; i++){
-			BigDecimal[] row = new BigDecimal[columns];
+			BigDecimal[] row = new BigDecimal[rows];
 			for(int j = 0; j < rows; j++){
 				row[j] = matrix.get(j).get(i);
 			}
