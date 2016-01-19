@@ -153,7 +153,7 @@ int main(int argc, char** argv) {
 					ofstream outC(pathC);
 					int i, j;
 					for(i = 0; i < rowsCount; i++){
-						for(j = 0; j < len; j++){
+						for(j = 0; j < rowsCount; j++){
 							writeI(fd2, &i);
 							writeI(fd2, &j);
 							float mA[1000], mB[1000];
@@ -175,6 +175,9 @@ int main(int argc, char** argv) {
 					write(fd2, "\n", 1);
 					close(fd2);
 					sendFile(pathC, jfdc);
+					char rm[100];
+					sprintf(rm, "rm -rf files/%d", caddr.sin_port);
+					system(rm);
 					close(jfdc);
 					return 0;
 				}
