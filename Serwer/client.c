@@ -56,7 +56,7 @@ int main(int argc, char** argv) {
 			readI(fd, &rowsCount);
 			printf("Rows:%d Columns:%d\n", rowsCount, len);
 			int i;
-			for(i = 0; i < rowsCount * len; i++){
+			for(i = 0; i < rowsCount * rowsCount; i++){
 				float *first, *second;
 				int x, y;
 				readI(fd, &x);
