@@ -1,2 +1,2 @@
-# Commputer Networks Project
+# Computer Networks Project
 Matrix multiplication using agent-server communication
